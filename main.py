@@ -35,10 +35,11 @@ def callback():
 # 學你說話
 @handler.add(MessageEvent, message=TextMessage)
 def echo(event):
-    print(event)
+    print(event.reply_token,TextSendMessage(text=event.message.text))
     line_bot_api.reply_message(
         event.reply_token,
         TextSendMessage(text=event.message.text)
     )
+    print("sent ok")
 if __name__ == "__main__":
     app.run()
