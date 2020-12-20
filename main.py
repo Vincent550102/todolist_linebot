@@ -24,7 +24,7 @@ def callback():
 
     body = request.get_data(as_text=True)
     app.logger.info("Request body: " + body)
-
+    print(body)
     try:
         handler.handle(body, signature)
     except InvalidSignatureError:
@@ -34,11 +34,10 @@ def callback():
 
 # 學你說話
 @handler.add(MessageEvent, message=TextMessage)
-def handle_message(event):
-    msg = event.message.text
-    print(msg)
-    msg = msg.encode('utf-8')
-    line_bot_api.reply_message(event.reply_token,TextSendMessage(text=event.message.text))
-
+def echo(event):
+    line_bot_api.reply_message(
+        event.reply_token,
+        TextSendMessage(text=event.message.text)
+    )
 if __name__ == "__main__":
     app.run()
