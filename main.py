@@ -37,7 +37,7 @@ def callback():
 # 學你說話
 @handler.add(MessageEvent, message=TextMessage)
 def echo(event):
-    mess = event.message.text
+    mess = event.message.text.split(" ")
     cnt = int()
     if mess.isdigit():
         cnt = int(mess)
