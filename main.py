@@ -4,7 +4,7 @@ from flask import Flask, request, abort
 from linebot import LineBotApi, WebhookHandler
 from linebot.exceptions import InvalidSignatureError
 from linebot.models import MessageEvent, TextMessage, TextSendMessage
-
+from time import sleep
 import configparser
 
 app = Flask(__name__)
@@ -52,6 +52,7 @@ def echo(event):
         TextSendMessage(text=resul_mess)
     )
     for i in range(50):
+        sleep(0.5)
         line_bot_api.reply_message(
         event.reply_token,
         TextSendMessage(text="OwOwO")
