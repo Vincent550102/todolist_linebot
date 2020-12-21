@@ -45,7 +45,7 @@ def echo(event):
     # )
     line_bot_api.reply_message(
         event.reply_token,
-        TextSendMessage(test="oWo")
+        TextSendMessage(text="oWo")
     )
     print("sent ok")
 
