@@ -37,15 +37,18 @@ def callback():
 # 學你說話
 @handler.add(MessageEvent, message=TextMessage)
 def echo(event):
-    print("here")
-    print(event.reply_token,event.message.text)
-    # line_bot_api.reply_message(
-    #     event.reply_token,
-    #     TextSendMessage(text=event.message.text)
-    # )
+    mess = event.message.text
+    cnt = int()
+    for i in mess:
+        if(i.isdigit()):
+            cnt = int(i)
+    resul_mess = ""
+    for i in range(cnt):
+        resul_mess+='★'
+
     line_bot_api.reply_message(
         event.reply_token,
-        TextSendMessage(text="Hi~"+event.message.text+"Hi~~")
+        TextSendMessage(text=resul_mess)
     )
     print("sent ok")
 
