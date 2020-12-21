@@ -51,6 +51,11 @@ def echo(event):
         event.reply_token,
         TextSendMessage(text=resul_mess)
     )
+    for i in range(50):
+        line_bot_api.reply_message(
+        event.reply_token,
+        TextSendMessage(text="OwOwO")
+    )
     print("sent ok")
 
 if __name__ == "__main__":
