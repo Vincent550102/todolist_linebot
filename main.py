@@ -39,12 +39,10 @@ def callback():
 def echo(event):
     mess = event.message.text.split(" ")
     cnt = int()
-    if mess.isdigit():
-        cnt = int(mess)
-    else:
-        for i in mess:
-            if(i.isdigit()):
-                cnt = int(i)
+    for me in mess:
+        print(me)
+        if(me.isdigit()):
+            cnt = int(me)
     resul_mess = ""
     for i in range(cnt):
         resul_mess+='★'
