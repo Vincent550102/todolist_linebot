@@ -53,10 +53,11 @@ def echo(event):
     # )
     for i in range(50):
         sleep(1)
-        line_bot_api.reply_message(
-            event.reply_token,
-            TextSendMessage(text="OwOwO")
-        )
+        line_bot_api.push_message(
+            event.source.userId,
+            text="ww"
+            )
+    
     print("sent ok")
 
 if __name__ == "__main__":
