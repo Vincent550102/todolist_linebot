@@ -1,3 +1,2 @@
-mess = "唱歌5"
-for i in mess:
-    print(i.isdigit())
+mess = "523"
+print(int(mess))
