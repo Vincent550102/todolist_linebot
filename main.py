@@ -44,15 +44,9 @@ def echo(event):
         if(me.isdigit()):
             cnt = int(me)
     resul_mess = ""
-    for i in range(cnt):
+    for _ in range(cnt):
         resul_mess+='★'
-    for i in range(50):
-        sleep(1)
-        line_bot_api.push_message(
-            event[0].source.userId,
-            text="ww"
-            )
-    
+    line_bot_api.reply_message(event.reply_token,text=resul_mess)
     print("sent ok")
 
 if __name__ == "__main__":
