@@ -43,7 +43,7 @@ def callback():
 def echo(event):
     print(event)
     mess = event.message.text.split(' ')
-    uid = event.source.userId
+    uid = event.source.user_id
     if mess[0] == "我要貓咪圖片":
         img = get_catimg()
         line_bot_api.reply_message(
