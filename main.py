@@ -18,6 +18,8 @@ config.read('config.ini')
 line_bot_api = LineBotApi(config.get('line-bot', 'channel_access_token'))
 handler = WebhookHandler(config.get('line-bot', 'channel_secret'))
 
+ToDoList = []
+
 # line_bot_api = LineBotApi("10cfe0b9-052c-47ea-95d4-e99fa8761c99")
 # handler = WebhookHandler("2bb08b3eefd3898727ae8ab11436a05f")
 
@@ -41,8 +43,8 @@ def callback():
 # 學你說話
 @handler.add(MessageEvent, message=TextMessage)
 def echo(event):
-    mess = event.message.text
-    if mess == "我要貓咪圖片":
+    mess = event.message.text.split(' ')
+    if mess[0] == "我要貓咪圖片":
         img = get_catimg()
         line_bot_api.reply_message(
             event.reply_token,
@@ -50,6 +52,29 @@ def echo(event):
                 original_content_url=img,
                 preview_image_url=img
             )
+        )
+    elif mess[0] == "加入":
+        result = str()
+        for part in mess:
+            result += part if part != mess[0] else ''
+        ToDoList.append(result)
+        line_bot_api.reply_message(
+            event.reply_token,
+            TextMessage(text='已加入 : "'+result+'"'+" 在 " +len(ToDoList))
+        )
+    elif mess[0] == "檢視":
+        result = "_ToDoList_\n"
+        for idx,item in enumerate(ToDoList):
+            result+= idx+'. '+item+'\n'
+        line_bot_api.reply_message(
+            event.reply_token,
+            TextMessage(text=result)
+        )
+    elif mess[0] == '刪除':
+        del ToDoList[mess[1]]
+        line_bot_api.reply_message(
+            event.reply_token,
+            TextMessage(text="已刪除 "+mess[1])
         )
     else:
         line_bot_api.reply_message(
