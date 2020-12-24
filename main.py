@@ -57,7 +57,7 @@ def echo(event):
         result = str()
         for part in mess:
             result += part if part != mess[0] else ''
-        print(result)
+        print(ToDoList)
         ToDoList.append(result)
         line_bot_api.reply_message(
             event.reply_token,
@@ -67,6 +67,7 @@ def echo(event):
         result = "_ToDoList_\n"
         for idx,item in enumerate(ToDoList):
             result+= str(idx)+'. '+str(item)+'\n'
+        print(ToDoList)
         line_bot_api.reply_message(
             event.reply_token,
             TextMessage(text=result)
@@ -75,7 +76,7 @@ def echo(event):
         del ToDoList[mess[1]]
         line_bot_api.reply_message(
             event.reply_token,
-            TextMessage(text="已刪除 "+mess[1])
+            TextMessage(text="已刪除 "+str(mess[1]))
         )
     else:
         line_bot_api.reply_message(
