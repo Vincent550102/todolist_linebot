@@ -63,8 +63,9 @@ def echo(event):
         )
     elif mess[0] == "檢視":
         result = "_ToDoList_\n"
+        print(ToDoList)
         for idx,item in enumerate(ToDoList):
-            result+= str(idx)+'. '+str(item)+'\n'
+            result += str(idx)+'. '+str(item)+'\n'
         print(ToDoList)
         line_bot_api.reply_message(
             event.reply_token,
