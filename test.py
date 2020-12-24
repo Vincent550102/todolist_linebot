@@ -1,2 +1,2 @@
-f = '{}. {}\n'.format('1','a')
-print(f)
+import json 
+db = json.load(open('DataBase.json', encoding='utf-8'))

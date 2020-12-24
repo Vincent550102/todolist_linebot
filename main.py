@@ -5,8 +5,7 @@ from linebot import LineBotApi, WebhookHandler
 from linebot.exceptions import InvalidSignatureError
 from linebot.models import MessageEvent, TextMessage, TextSendMessage, ImageSendMessage
 from time import sleep
-import configparser
-import requests,json
+import configparser,requests,json
 app = Flask(__name__)
 
 CATPI = "https://api.thecatapi.com/v1/images/search"
@@ -58,7 +57,6 @@ def echo(event):
         result = ""
         for part in mess:
             result += part if part != mess[0] else ''
-        
         if uid in db:
             db[uid]['todolist'].append(result)
         else:
