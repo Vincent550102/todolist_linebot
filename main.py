@@ -77,7 +77,7 @@ def echo(event):
         result = '_ToDoList_\n'
         db = json.load(open('DataBase.json', encoding='utf-8'))
         print(db)
-        for idx,item in enumerate(db[uid]):
+        for idx,item in enumerate(db[uid]['todolist']):
             result += '{}. {}\n'.format(str(idx+1),item)
         print(db)
         line_bot_api.reply_message(
