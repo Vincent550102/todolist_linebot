@@ -32,8 +32,6 @@ def callback():
     signature = request.headers['X-Line-Signature']
     body = request.get_data(as_text=True)
     app.logger.info("Request body: " + body)
-    print(body)
-    print("ok")
     try:
         handler.handle(body, signature)
     except InvalidSignatureError:
@@ -57,8 +55,8 @@ def echo(event):
         result = str()
         for part in mess:
             result += part if part != mess[0] else ''
-        print(ToDoList)
         ToDoList.append(result)
+        print(ToDoList)
         line_bot_api.reply_message(
             event.reply_token,
             TextMessage(text='已加入 : "'+result+'"'+" 在 " +str(len(ToDoList)))
@@ -74,6 +72,7 @@ def echo(event):
         )
     elif mess[0] == '刪除':
         del ToDoList[mess[1]]
+        print(ToDoList)
         line_bot_api.reply_message(
             event.reply_token,
             TextMessage(text="已刪除 "+str(mess[1]))
