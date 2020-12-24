@@ -57,6 +57,7 @@ def echo(event):
         result = str()
         for part in mess:
             result += part if part != mess[0] else ''
+        print(result)
         ToDoList.append(result)
         line_bot_api.reply_message(
             event.reply_token,
