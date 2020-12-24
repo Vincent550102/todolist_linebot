@@ -41,6 +41,7 @@ def callback():
 # 學你說話
 @handler.add(MessageEvent, message=TextMessage)
 def echo(event):
+    print(event)
     mess = event.message.text.split(' ')
     uid = event.source.userId
     if mess[0] == "我要貓咪圖片":
