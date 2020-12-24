@@ -86,7 +86,7 @@ def echo(event):
         )
     elif mess[0] == '刪除':
         db = json.load(open('DataBase.json', encoding='utf-8'))
-        del db[uid]['todolist'][int(mess[1]-1)]
+        del db[uid]['todolist'][int(mess[1])-1]
         print(db)
         line_bot_api.reply_message(
             event.reply_token,
