@@ -61,12 +61,12 @@ def echo(event):
         ToDoList.append(result)
         line_bot_api.reply_message(
             event.reply_token,
-            TextMessage(text='已加入 : "'+result+'"'+" 在 " +len(ToDoList))
+            TextMessage(text='已加入 : "'+result+'"'+" 在 " +str(len(ToDoList)))
         )
     elif mess[0] == "檢視":
         result = "_ToDoList_\n"
         for idx,item in enumerate(ToDoList):
-            result+= idx+'. '+item+'\n'
+            result+= str(idx)+'. '+str(item)+'\n'
         line_bot_api.reply_message(
             event.reply_token,
             TextMessage(text=result)
