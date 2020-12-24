@@ -54,7 +54,7 @@ def echo(event):
     else:
         line_bot_api.reply_message(
             event.reply_token,
-            TextMessage(text=event.message.text)
+            TextMessage(text='我不知道你在說甚麼@@ : "'+event.message.text+'"')
         )
 
 if __name__ == "__main__":
