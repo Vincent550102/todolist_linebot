@@ -65,7 +65,7 @@ def echo(event):
         result = "_ToDoList_\n"
         print(ToDoList)
         for idx,item in enumerate(ToDoList):
-            result += str(idx)+'. '+str(item)+'\n'
+            result += str(idx+1)+'. '+str(item)+'\n'
         print(ToDoList)
         line_bot_api.reply_message(
             event.reply_token,
