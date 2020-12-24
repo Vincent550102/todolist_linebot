@@ -18,7 +18,7 @@ config.read('config.ini')
 line_bot_api = LineBotApi(config.get('line-bot', 'channel_access_token'))
 handler = WebhookHandler(config.get('line-bot', 'channel_secret'))
 
-ToDoList = []
+
 
 # line_bot_api = LineBotApi("10cfe0b9-052c-47ea-95d4-e99fa8761c99")
 # handler = WebhookHandler("2bb08b3eefd3898727ae8ab11436a05f")
@@ -40,6 +40,7 @@ def callback():
 
 # 學你說話
 @handler.add(MessageEvent, message=TextMessage)
+ToDoList = []
 def echo(event):
     mess = event.message.text.split(' ')
     if mess[0] == "我要貓咪圖片":
