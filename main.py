@@ -10,7 +10,6 @@ import requests,json
 app = Flask(__name__)
 
 CATPI = "https://api.thecatapi.com/v1/images/search"
-
 # LINE 聊天機器人的基本資料
 config = configparser.ConfigParser()
 config.read('config.ini')
@@ -40,9 +39,9 @@ def callback():
 
 # 學你說話
 @handler.add(MessageEvent, message=TextMessage)
-ToDoList = []
 def echo(event):
     mess = event.message.text.split(' ')
+    uid = event.source.userId
     if mess[0] == "我要貓咪圖片":
         img = get_catimg()
         line_bot_api.reply_message(
@@ -53,32 +52,48 @@ def echo(event):
             )
         )
     elif mess[0] == "加入":
-        result = str()
+        db = json.load(open('DataBase.json', encoding='utf-8'))
+        result = ""
         for part in mess:
             result += part if part != mess[0] else ''
-        ToDoList.append(result)
-        print(ToDoList)
+        
+        if uid in db:
+            db[uid]['todolist'].append(result)
+        else:
+            db[uid] = {
+                "uid" : uid,
+                "todolist" : [result],
+                "nickname" : "nickname"
+            }
+        print(db[uid]['todolist'])
         line_bot_api.reply_message(
             event.reply_token,
-            TextMessage(text='已加入 : "'+result+'"'+" 在 " +str(len(ToDoList)))
+            TextMessage(text='已加入 : "'+result+'"'+" 在 " +str(len(db[uid]['todolist'])))
         )
+        with open('DataBase.json','w',encoding='utf-8') as f:
+            json.dump(db,f,indent=2,sort_keys=True,ensure_ascii=False)
+
     elif mess[0] == "檢視":
-        result = "_ToDoList_\n"
-        print(ToDoList)
+        result = '_ToDoList_\n'
+        db = json.load(open('DataBase.json', encoding='utf-8'))
+        print(db)
         for idx,item in enumerate(ToDoList):
-            result += str(idx+1)+'. '+str(item)+'\n'
-        print(ToDoList)
+            result += '{}. {}\n'.format(str(idx+1),item)
+        print(db)
         line_bot_api.reply_message(
             event.reply_token,
             TextMessage(text=result)
         )
     elif mess[0] == '刪除':
-        del ToDoList[mess[1]]
-        print(ToDoList)
+        db = json.load(open('DataBase.json', encoding='utf-8'))
+        del db[uid]['todolist'][mess[1]]
+        print(db)
         line_bot_api.reply_message(
             event.reply_token,
             TextMessage(text="已刪除 "+str(mess[1]))
         )
+        with open('DataBase.json','w',encoding='utf-8') as f:
+            json.dump(db,f,indent=2,sort_keys=True,ensure_ascii=False)
     else:
         line_bot_api.reply_message(
             event.reply_token,
