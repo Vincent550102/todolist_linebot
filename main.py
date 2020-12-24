@@ -3,7 +3,7 @@ import os
 from flask import Flask, request, abort
 from linebot import LineBotApi, WebhookHandler
 from linebot.exceptions import InvalidSignatureError
-from linebot.models import MessageEvent, TextMessage, TextSendMessage
+from linebot.models import MessageEvent, TextMessage, TextSendMessage, ImageSendMessage
 from time import sleep
 import configparser
 import requests,json
@@ -52,7 +52,7 @@ def echo(event):
             )
         )
     else:
-        ine_bot_api.reply_message(
+        line_bot_api.reply_message(
             event.reply_token,
             TextMessage(text=event.message.text)
         )
