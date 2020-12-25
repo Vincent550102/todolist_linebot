@@ -14,7 +14,8 @@ from linebot.models import (
 )
 from time import sleep
 import configparser,requests,json
-from env import FUNC_push, FUNC_delete, CATPI
+from env import CATPI
+from UserDataBaseTemplate import create_DB_Template
 app = Flask(__name__)
 
 # LINE 聊天機器人的基本資料
@@ -48,37 +49,30 @@ def callback():
 # 學你說話
 @handler.add(MessageEvent, message=TextMessage)
 def echo(event):
-    global FUNC_push,FUNC_delete
-    print(FUNC_push,FUNC_delete)
     mess = event.message.text
     uid = event.source.user_id
-    if mess == "我要貓咪圖片":
-        img = get_catimg()
-        line_bot_api.reply_message(
-            event.reply_token,
-            ImageSendMessage(
-                original_content_url=img,
-                preview_image_url=img
-            )
-        )
+    db = json.load(open('DataBase.json', encoding='utf-8'))
+    try:
+        FUNC_push = db[uid]['user_status']['FUNC_push']
+        FUNC_delete = db[uid]['user_status']['FUNC_delete']
+    except:
+        db[uid] = create_DB_Template(uid)
+    print(FUNC_push,FUNC_delete)
+    if mess == 'debug':
+        reply_mess(event, '''
+    uid : {}
+    FUNC_push : {}
+    FUNC_delete : {}
+'''.format(uid,FUNC_push,FUNC_delete))
+
     elif mess == "加入" or FUNC_push:
         if FUNC_push:
             if mess == "取消":
                 reply_mess(event, "已取消加入動作")
             else:
-                db = json.load(open('DataBase.json', encoding='utf-8'))
-                if uid in db:
-                    db[uid]['todolist'].append(mess)
-                else:
-                    db[uid] = {
-                        "uid" : uid,
-                        "todolist" : [mess],
-                        "nickname" : "nickname"
-                    }
+                db[uid]['todolist'].append(mess)
                 print(db[uid]['todolist'])
                 reply_mess(event, '已加入 : {} 在 {}'.format(mess,str(len(db[uid]['todolist']))))
-                with open('DataBase.json','w',encoding='utf-8') as f:
-                    json.dump(db,f,indent=2,sort_keys=True,ensure_ascii=False)
             FUNC_push = False
         else:
             reply_mess(event, '請輸入您要加入的待辦事項~ 若想放棄請輸入"取消"')
@@ -102,8 +96,6 @@ def echo(event):
                 del db[uid]['todolist'][int(mess[1])-1]
                 print(db)
                 reply_mess(event, '已刪除 {}'.format(str(mess)))
-                with open('DataBase.json','w',encoding='utf-8') as f:
-                    json.dump(db,f,indent=2,sort_keys=True,ensure_ascii=False)
             FUNC_delete = False
         else:
             reply_mess(event, '請輸入您要刪除的待辦事項~ 若想放棄請輸入"取消"')
@@ -133,19 +125,30 @@ def echo(event):
                     ]
                 )
             )
-    )
-    elif mess == 'debug':
-        reply_mess(event, '''
-            uid : {}
-            FUNC_push : {}
-            FUNC_delete : {}
-        '''.format(uid,FUNC_push,FUNC_delete))
+        )
+
+    elif mess == "我要貓咪圖片":
+        img = get_catimg()
+        line_bot_api.reply_message(
+            event.reply_token,
+            ImageSendMessage(
+                original_content_url=img,
+                preview_image_url=img
+            )
+        )
+
     else:
         line_bot_api.reply_message(
             event.reply_token,
             TextMessage(text='我不知道你在說甚麼@@ : "'+event.message.text+'"')
         )
     print(FUNC_push, FUNC_delete)
+    db[uid]['user_status']['FUNC_push'] = FUNC_push
+    db[uid]['user_status']['FUNC_delete'] = FUNC_delete
+
+    with open('DataBase.json','w',encoding='utf-8') as f:
+        json.dump(db,f,indent=2,sort_keys=True,ensure_ascii=False)
+
 
 if __name__ == "__main__":
     app.run()
