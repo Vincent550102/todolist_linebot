@@ -58,7 +58,7 @@ def echo(event):
     global FUNC_push
     mess = event.message.text
     uid = event.source.user_id
-    if mess[0] == "我要貓咪圖片":
+    if mess == "我要貓咪圖片":
         img = get_catimg()
         line_bot_api.reply_message(
             event.reply_token,
@@ -90,7 +90,7 @@ def echo(event):
             reply_mess(event, '請輸入您要加入的待辦事項~')
             FUNC_push = True
 
-    elif mess[0] == "檢視":
+    elif mess == "檢視":
         result = '_ToDoList_\n'
         db = json.load(open('DataBase.json', encoding='utf-8'))
         print(db)
@@ -101,7 +101,7 @@ def echo(event):
             event.reply_token,
             TextMessage(text=result)
         )
-    elif mess[0] == '刪除':
+    elif mess == '刪除':
         db = json.load(open('DataBase.json', encoding='utf-8'))
         del db[uid]['todolist'][int(mess[1])-1]
         print(db)
@@ -111,7 +111,7 @@ def echo(event):
         )
         with open('DataBase.json','w',encoding='utf-8') as f:
             json.dump(db,f,indent=2,sort_keys=True,ensure_ascii=False)
-    elif mess[0] == 'test':
+    elif mess == 'test':
         line_bot_api.reply_message(  # 回復傳入的訊息文字
             event.reply_token,
             TemplateSendMessage(
