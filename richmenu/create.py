@@ -40,3 +40,4 @@ req = requests.request('POST', 'https://api.line.me/v2/bot/richmenu',
                        headers=headers,data=json.dumps(body).encode('utf-8'))
 
 print(req.text)
+#"richMenuId":"richmenu-36a4f857e0bf5f7c127bece8b73668cf"
