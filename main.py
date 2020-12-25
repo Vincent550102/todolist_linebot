@@ -57,6 +57,8 @@ def echo(event):
         FUNC_delete = db[uid]['user_status']['FUNC_delete']
     except:
         db[uid] = create_DB_Template(uid)
+        FUNC_push = db[uid]['user_status']['FUNC_push']
+        FUNC_delete = db[uid]['user_status']['FUNC_delete']
     print(FUNC_push,FUNC_delete)
     if mess == 'debug':
         reply_mess(event, '''
