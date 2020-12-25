@@ -24,7 +24,8 @@ config.read('config.ini')
 
 line_bot_api = LineBotApi(config.get('line-bot', 'channel_access_token'))
 handler = WebhookHandler(config.get('line-bot', 'channel_secret'))
-
+FUNC_push = False
+FUNC_delete = False
 
 
 # line_bot_api = LineBotApi("10cfe0b9-052c-47ea-95d4-e99fa8761c99")
@@ -32,6 +33,12 @@ handler = WebhookHandler(config.get('line-bot', 'channel_secret'))
 
 def get_catimg():
     return requests.get(CATPI).json()[-1]['url']
+
+def reply_mess(event, mess):
+    line_bot_api.reply_message(
+        event.reply_token,
+        TextMessage(text=mess)
+    )
 
 # 接收 LINE 的資訊
 @app.route("/callback", methods=['POST'])
@@ -60,26 +67,28 @@ def echo(event):
                 preview_image_url=img
             )
         )
-    elif mess[0] == "加入":
-        db = json.load(open('DataBase.json', encoding='utf-8'))
-        result = ""
-        for part in mess:
-            result += part if part != mess[0] else ''
-        if uid in db:
-            db[uid]['todolist'].append(result)
+    elif mess == "加入" or FUNC_push:
+        if FUNC_push:
+            if mess == "取消":
+                reply_mess(event, "已取消加入動作")
+            else:
+                db = json.load(open('DataBase.json', encoding='utf-8'))
+                if uid in db:
+                    db[uid]['todolist'].append(result)
+                else:
+                    db[uid] = {
+                        "uid" : uid,
+                        "todolist" : [result],
+                        "nickname" : "nickname"
+                    }
+                print(db[uid]['todolist'])
+                reply_mess(event, '已加入 : {} 在 {}'.format(mess,str(len(db[uid]['todolist']))))
+                with open('DataBase.json','w',encoding='utf-8') as f:
+                    json.dump(db,f,indent=2,sort_keys=True,ensure_ascii=False)
+            FUNC_push = False
         else:
-            db[uid] = {
-                "uid" : uid,
-                "todolist" : [result],
-                "nickname" : "nickname"
-            }
-        print(db[uid]['todolist'])
-        line_bot_api.reply_message(
-            event.reply_token,
-            TextMessage(text='已加入 : "'+result+'"'+" 在 " +str(len(db[uid]['todolist'])))
-        )
-        with open('DataBase.json','w',encoding='utf-8') as f:
-            json.dump(db,f,indent=2,sort_keys=True,ensure_ascii=False)
+            reply_mess(event, '請輸入您要加入的待辦事項~')
+            FUNC_push = True
 
     elif mess[0] == "檢視":
         result = '_ToDoList_\n'
