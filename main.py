@@ -74,11 +74,11 @@ def echo(event):
             else:
                 db = json.load(open('DataBase.json', encoding='utf-8'))
                 if uid in db:
-                    db[uid]['todolist'].append(result)
+                    db[uid]['todolist'].append(mess)
                 else:
                     db[uid] = {
                         "uid" : uid,
-                        "todolist" : [result],
+                        "todolist" : [mess],
                         "nickname" : "nickname"
                     }
                 print(db[uid]['todolist'])
