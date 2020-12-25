@@ -49,7 +49,7 @@ def callback():
 @handler.add(MessageEvent, message=TextMessage)
 def echo(event):
     global FUNC_push,FUNC_delete
-    print(FUNC_push, FUNC_delete)
+    
     mess = event.message.text
     uid = event.source.user_id
     if mess == "我要貓咪圖片":
@@ -145,6 +145,7 @@ def echo(event):
             event.reply_token,
             TextMessage(text='我不知道你在說甚麼@@ : "'+event.message.text+'"')
         )
+    print(FUNC_push, FUNC_delete)
 
 if __name__ == "__main__":
     app.run()
