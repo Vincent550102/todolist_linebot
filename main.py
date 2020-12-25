@@ -108,20 +108,20 @@ def echo(event):
             TemplateSendMessage(
                 alt_text='Buttons template',
                 template=ButtonsTemplate(
-                    title='Menu',
-                    text='請選擇地區',
+                    title='ToDoList Menu',
+                    text='請選擇動作',
                     actions=[
                         MessageTemplateAction(
-                            label='台北市',
-                            text='台北市'
+                            label='檢視(check)',
+                            text='檢視'
                         ),
                         MessageTemplateAction(
-                            label='台中市',
-                            text='台中市'
+                            label='加入(push)',
+                            text='加入'
                         ),
                         MessageTemplateAction(
-                            label='高雄市',
-                            text='高雄市'
+                            label='刪除(delete)',
+                            text='刪除'
                         )
                     ]
                 )
