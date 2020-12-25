@@ -49,7 +49,7 @@ def callback():
 @handler.add(MessageEvent, message=TextMessage)
 def echo(event):
     global FUNC_push,FUNC_delete
-    
+    print(FUNC_push)
     mess = event.message.text
     uid = event.source.user_id
     if mess == "我要貓咪圖片":
