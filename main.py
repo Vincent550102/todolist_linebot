@@ -95,7 +95,7 @@ def echo(event):
                 reply_mess(event, "已取消刪除動作")
             else:
                 db = json.load(open('DataBase.json', encoding='utf-8'))
-                del db[uid]['todolist'][int(mess[1])-1]
+                del db[uid]['todolist'][int(mess)-1]
                 print(db)
                 reply_mess(event, '已刪除 {}'.format(str(mess)))
             FUNC_delete = False
