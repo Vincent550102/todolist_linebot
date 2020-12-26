@@ -77,7 +77,7 @@ def echo(event):
                 reply_mess(event, '已加入 : {} 在 {}'.format(mess,str(len(db[uid]['todolist']))))
             FUNC_push = False
         else:
-            reply_mess(event, '請輸入您要加入的待辦事項~ 若想放棄請輸入"取消"')
+            reply_mess(event, '請輸入您要加入的事項~ 若想放棄請輸入"取消"')
             FUNC_push = True
 
     elif mess == "檢視":
