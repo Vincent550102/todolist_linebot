@@ -10,28 +10,12 @@ body = {
     "chatBarText": "Controller",
     "areas":[
         {
-          "bounds": {"x": 551, "y": 325, "width": 321, "height": 321},
-          "action": {"type": "message", "text": "up"}
+          "bounds": {"x": 0, "y": 685, "width": 1250, "height": 1000},
+          "action": {"type": "message", "text": "todolist_menu"}
         },
         {
-          "bounds": {"x": 876, "y": 651, "width": 321, "height": 321},
-          "action": {"type": "message", "text": "right"}
-        },
-        {
-          "bounds": {"x": 551, "y": 972, "width": 321, "height": 321},
-          "action": {"type": "message", "text": "down"}
-        },
-        {
-          "bounds": {"x": 225, "y": 651, "width": 321, "height": 321},
-          "action": {"type": "message", "text": "left"}
-        },
-        {
-          "bounds": {"x": 1433, "y": 657, "width": 367, "height": 367},
-          "action": {"type": "message", "text": "btn b"}
-        },
-        {
-          "bounds": {"x": 1907, "y": 657, "width": 367, "height": 367},
-          "action": {"type": "message", "text": "btn a"}
+          "bounds": {"x": 1250, "y": 692, "width": 1250, "height": 1000},
+          "action": {"type": "message", "text": "rand_menu"}
         }
     ]
   }

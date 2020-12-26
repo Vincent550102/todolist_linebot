@@ -103,7 +103,7 @@ def echo(event):
             reply_mess(event, '請輸入您要刪除的待辦事項~ 若想放棄請輸入"取消"')
             FUNC_delete = True
 
-    elif mess == 'menu':
+    elif mess == 'todolist_menu':
         line_bot_api.reply_message(  # 回復傳入的訊息文字
             event.reply_token,
             TemplateSendMessage(
