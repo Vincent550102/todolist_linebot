@@ -15,7 +15,8 @@ def create_DB_Template(uid):
             'user_status':{
                 'FUNC_push' : False,
                 'FUNC_delete' : False,
-                'FUNC_chose' : False
+                'FUNC_chose' : False,
+                'FUNC_special' : True
             },
             'now_set' : '-1'
         },

@@ -1,3 +1,2 @@
-k = 310
-tt = 'as {}'.format(k if k != -1 else "null")
-print(tt)
+from random import randint
+print(randint(1,10))

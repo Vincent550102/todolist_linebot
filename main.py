@@ -12,6 +12,7 @@ from linebot.models import (
     MessageTemplateAction,
     TemplateSendMessage
 )
+from random import randint
 from time import sleep
 import configparser,requests,json
 from env import CATPI
@@ -39,6 +40,13 @@ def push_mess(uid, mess):
         uid,
         TextMessage(text=mess)
     )
+
+def start_random(uid,randrange,spacial):
+    num = randint(randrange[0],randrange[1])
+    if spacial:
+        pass
+    push_mess(uid,'恭喜抽到的是 {} 號~'.format(num))
+
 
 # 接收 LINE 的資訊
 @app.route("/callback", methods=['POST'])
@@ -89,7 +97,7 @@ def echo(event):
                     db[uid]['ToDoList']['todolist'].append(mess)
                     reply_mess(event, '已加入 : {} 在 {}'.format(mess,str(len(db[uid]['ToDoList']['todolist']))))
                 except:
-                    reply_mess(event, '沒有此待辦事項')
+                    reply_mess(event, '沒有此待辦事項，已取消加入動作')
             TODO_FUNC_push = False
         else:
             reply_mess(event, '請輸入您要加入的事項~ 若想放棄請輸入"取消"')
@@ -110,7 +118,7 @@ def echo(event):
                     del db[uid]['ToDoList']['todolist'][int(mess)-1]
                     reply_mess(event, '已刪除 {}'.format(str(mess)))
                 except:
-                    reply_mess(event, '沒有此待辦事項')
+                    reply_mess(event, '沒有此待辦事項，已取消刪除動作')
             TODO_FUNC_delete = False
         else:
             reply_mess(event, '請輸入您要刪除的待辦事項~ 若想放棄請輸入"取消"')
@@ -127,7 +135,7 @@ def echo(event):
                     db[uid]['RanDom']['setlist'][key] = rang
                     reply_mess(event, '已新增 {} 在 {}'.format(key,rang))
                 except:
-                    reply_mess(event, '發生問題，有可能是你的設定名稱輸錯了')
+                    reply_mess(event, '發生問題，有可能是你的設定名稱輸錯了，已取消新增動作')
             RAND_FUNC_push = False
 
         elif RAND_FUNC_delete:
@@ -138,7 +146,7 @@ def echo(event):
                     del db[uid]['RanDom']['setlist'][mess]
                     reply_mess(event, '已刪除 : {}'.format(mess))
                 except:
-                    reply_mess(event, '發生問題，有可能是你的設定名稱輸錯了')
+                    reply_mess(event, '發生問題，有可能是你的設定名稱輸錯了，已取消刪除動作')
             RAND_FUNC_delete = False
 
     elif mess == 'RAND_設定' or mess == 'RAND_新增' or mess == 'RAND_刪除':
@@ -182,7 +190,7 @@ def echo(event):
                     db[uid]['RanDom']['now_set'] = mess
                     reply_mess(event, '已選擇 {}'.format(mess))
                 else:
-                    reply_mess(event, '發生問題，沒有這個設定檔')
+                    reply_mess(event, '發生問題，沒有這個設定檔，已取消選擇動作')
             RAND_FUNC_chose = False
         else:
             curlist = '目前有的設定檔\n'
@@ -191,6 +199,23 @@ def echo(event):
             curlist += '\n目前選擇的設定檔 : {}\n請輸入您要選擇的設定檔~ 若想放棄請輸入"取消"'.format(db[uid]['RanDom']['now_set'] if db[uid]['RanDom']['now_set'] != '-1' else "null")
             reply_mess(event, curlist)
             RAND_FUNC_chose = True
+
+    elif mess == 'RAND_開始抽':
+        if db[uid]['RanDom']['now_set'] == '-1':
+            reply_mess(event, '您尚未選擇設定檔，請點選第一個按鈕新增設定檔或第二個按鈕選擇設定檔')
+        else:
+            now_set = db[uid]['RanDom']['now_set']
+            now_range = db[uid]['RanDom']['setlist'][now_set]
+            reply_mess(event, '使用設定檔 {} 範圍為 {} 開始抽號~'.format(now_set,now_range))
+            start_random(uid,now_range.split('~'),db[uid]['RanDom']['user_status']['FUNC_special'])
+    
+    elif mess == 'RAND_特殊模式':
+        if db[uid]['RanDom']['user_status']['FUNC_special']:
+            db[uid]['RanDom']['user_status']['FUNC_special'] = False
+            reply_mess(event, '已取消特殊模式')
+        else:
+            db[uid]['RanDom']['user_status']['FUNC_special'] = True
+            reply_mess(event, '已開啟特殊模式')
 
     elif mess == 'todolist_menu':
         line_bot_api.reply_message(  # 回復傳入的訊息文字
@@ -238,6 +263,10 @@ def echo(event):
                         MessageTemplateAction(
                             label='開始抽號(random)',
                             text='RAND_開始抽'
+                        ),
+                        MessageTemplateAction(
+                            label='特殊模式(special)',
+                            text='RAND_特殊模式'
                         )
                     ]
                 )
