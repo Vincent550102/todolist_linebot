@@ -34,6 +34,12 @@ def reply_mess(event, mess):
         TextMessage(text=mess)
     )
 
+def push_mess(uid, mess):
+    line_bot_api.push_message(
+        uid,
+        TextMessage(text=mess)
+    )
+
 # 接收 LINE 的資訊
 @app.route("/callback", methods=['POST'])
 def callback():
@@ -53,29 +59,29 @@ def echo(event):
     uid = event.source.user_id
     db = json.load(open('DataBase.json', encoding='utf-8'))
     try:
-        FUNC_push = db[uid]['user_status']['FUNC_push']
-        FUNC_delete = db[uid]['user_status']['FUNC_delete']
+        FUNC_push = db[uid]['ToDoList']['user_status']['FUNC_push']
+        FUNC_delete = db[uid]['ToDoList']['user_status']['FUNC_delete']
     except:
         db[uid] = create_DB_Template(uid)
-        FUNC_push = db[uid]['user_status']['FUNC_push']
-        FUNC_delete = db[uid]['user_status']['FUNC_delete']
-    print(FUNC_push,FUNC_delete)
+        FUNC_push = db[uid]['ToDoList']['user_status']['FUNC_push']
+        FUNC_delete = db[uid]['ToDoList']['user_status']['FUNC_delete']
+
     if mess == 'debug':
         reply_mess(event, '''
     uid : {}
     FUNC_push : {}
     FUNC_delete : {}
 '''.format(uid,FUNC_push,FUNC_delete))
+        print(db)
 
     elif mess == "加入" or FUNC_push:
         if FUNC_push:
             if mess == "取消":
                 reply_mess(event, "已取消加入動作")
             else:
-                db[uid]['todolist'].append(mess)
-                print(db[uid]['todolist'])
-                line_bot_api.push_message(uid,TextMessage(text='test'))
-                reply_mess(event, '已加入 : {} 在 {}'.format(mess,str(len(db[uid]['todolist']))))
+                db[uid]['ToDoList']['todolist'].append(mess)
+                
+                reply_mess(event, '已加入 : {} 在 {}'.format(mess,str(len(db[uid]['ToDoList']['todolist']))))
             FUNC_push = False
         else:
             reply_mess(event, '請輸入您要加入的事項~ 若想放棄請輸入"取消"')
@@ -84,10 +90,8 @@ def echo(event):
     elif mess == "檢視":
         result = '_ToDoList_\n'
         db = json.load(open('DataBase.json', encoding='utf-8'))
-        print(db)
-        for idx,item in enumerate(db[uid]['todolist']):
+        for idx,item in enumerate(db[uid]['ToDoList']['todolist']):
             result += '{}. {}\n'.format(str(idx+1),item)
-        print(db)
         reply_mess(event, result+'[uid : {}]'.format(uid))
 
     elif mess == '刪除' or FUNC_delete:
@@ -96,7 +100,7 @@ def echo(event):
                 reply_mess(event, "已取消刪除動作")
             else:
                 db = json.load(open('DataBase.json', encoding='utf-8'))
-                del db[uid]['todolist'][int(mess)-1]
+                del db[uid]['ToDoList']['todolist'][int(mess)-1]
                 print(db)
                 reply_mess(event, '已刪除 {}'.format(str(mess)))
             FUNC_delete = False
@@ -130,6 +134,32 @@ def echo(event):
             )
         )
 
+    elif mess == 'rand_menu':
+        line_bot_api.reply_message(  # 回復傳入的訊息文字
+            event.reply_token,
+            TemplateSendMessage(
+                alt_text='Buttons template',
+                template=ButtonsTemplate(
+                    title='Random Menu',
+                    text='請選擇動作',
+                    actions=[
+                        MessageTemplateAction(
+                            label='新增設定(new set)',
+                            text='新設定'
+                        ),
+                        MessageTemplateAction(
+                            label='選擇設定(chose set)',
+                            text='選設定'
+                        ),
+                        MessageTemplateAction(
+                            label='開始抽號(random)',
+                            text='開始抽'
+                        )
+                    ]
+                )
+            )
+        )
+    
     elif mess == "我要貓咪圖片":
         img = get_catimg()
         line_bot_api.reply_message(
@@ -145,9 +175,8 @@ def echo(event):
             event.reply_token,
             TextMessage(text='我不知道你在說甚麼@@ : "'+event.message.text+'"')
         )
-    print(FUNC_push, FUNC_delete)
-    db[uid]['user_status']['FUNC_push'] = FUNC_push
-    db[uid]['user_status']['FUNC_delete'] = FUNC_delete
+    db[uid]['ToDoList']['user_status']['FUNC_push'] = FUNC_push
+    db[uid]['ToDoList']['user_status']['FUNC_delete'] = FUNC_delete
 
     with open('DataBase.json','w',encoding='utf-8') as f:
         json.dump(db,f,indent=2,sort_keys=True,ensure_ascii=False)
