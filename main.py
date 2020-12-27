@@ -48,7 +48,7 @@ def start_random(uid,randrange,spacial):
         M = datetime.datetime.now().month
         D = datetime.datetime.now().day
         T = datetime.datetime.now().time()
-        Y_M_D = Y_M_D
+        Y_M_D = Y+M+D
         Ts = datetime.datetime.now().time().second+datetime.datetime.now().time().minute*60+datetime.datetime.now().time().hour*3600
         Ts_minal_Y_M_D = Ts//Y_M_D
         push_mess(uid,'現在是{}年{}月{}日{}'.format(str(Y),str(M),str(D),str(T)))
