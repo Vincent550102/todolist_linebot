@@ -43,6 +43,7 @@ def push_mess(uid, mess):
 
 def start_random(uid,randrange,spacial):
     num = randint(int(randrange[0]),int(randrange[1]))
+    sleep(1)
     if spacial:
         Y = datetime.datetime.now().year
         M = datetime.datetime.now().month
