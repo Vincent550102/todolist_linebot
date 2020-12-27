@@ -14,7 +14,7 @@ from linebot.models import (
 )
 from random import randint
 from time import sleep
-import configparser,requests,json
+import configparser,requests,json,datetime
 from env import CATPI
 from UserDataBaseTemplate import create_DB_Template
 app = Flask(__name__)
@@ -44,8 +44,31 @@ def push_mess(uid, mess):
 def start_random(uid,randrange,spacial):
     num = randint(int(randrange[0]),int(randrange[1]))
     if spacial:
-        pass
-    push_mess(uid,'恭喜抽到的是 {} 號~'.format(str(num)))
+        Y = datetime.datetime.now().year
+        M = datetime.datetime.now().month
+        D = datetime.datetime.now().day
+        T = datetime.datetime.now().time()
+        Y_M_D = Y_M_D
+        Ts = datetime.datetime.now().time().second+datetime.datetime.now().time().minute*60+datetime.datetime.now().time().hour*3600
+        Ts_minal_Y_M_D = Ts//Y_M_D
+        push_mess(uid,'現在是{}年{}月{}日{}'.format(str(Y),str(M),str(D),str(T)))
+        sleep(1)
+        push_mess(uid,'{}+{}+{}是{}'.format(str(Y),str(M),str(D),str(Y_M_D)))
+        sleep(1)
+        push_mess(uid,'今天已過了{}秒'.format(str(Ts)))
+        sleep(1)
+        push_mess(uid,'{}除以{}是{}餘{}'.format(str(Ts),str(Y_M_D),str(Ts_minal_Y_M_D),str(Ts%Y_M_D)))
+        sleep(1)
+        push_mess(uid,'{}加上{}減去{}是{}'.format(str(Y_M_D),str(Ts_minal_Y_M_D),str(Ts%Y_M_D),str(Y_M_D+Ts_minal_Y_M_D-Ts%Y_M_D)))
+        final = Y_M_D+Ts_minal_Y_M_D-Ts%Y_M_D
+        sleep(1)
+        if final <= num:
+            push_mess(uid,'最後{}減去{} 所以...'.format(str(final),str(final-num)))
+        else:
+            push_mess(uid,'最後{}加上{} 所以...'.format(str(final),str(num-final)))
+
+
+    push_mess(uid,'抽到的是 {} 號~'.format(str(num)))
 
 
 # 接收 LINE 的資訊
