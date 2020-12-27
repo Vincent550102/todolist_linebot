@@ -257,7 +257,7 @@ def echo(event):
                             text='RAND_設定'
                         ),
                         MessageTemplateAction(
-                            label='選擇設定(chose set)',
+                            label='選擇設定(chose set) 目前 : {}'.format(db[uid]['RanDom']['now_set'] if db[uid]['RanDom']['now_set']!='-1' else '尚未選擇'),
                             text='RAND_選設定'
                         ),
                         MessageTemplateAction(
@@ -265,7 +265,7 @@ def echo(event):
                             text='RAND_開始抽'
                         ),
                         MessageTemplateAction(
-                            label='特殊模式(special)',
+                            label='特殊模式(special) 目前 : {}'.format("啟用" if db[uid]['RanDom']['user_status']['FUNC_special'] else "關閉"),
                             text='RAND_特殊模式'
                         )
                     ]
