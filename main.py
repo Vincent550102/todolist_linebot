@@ -136,7 +136,7 @@ def echo(event):
             reply_mess(event, '請輸入您要刪除的設定~ 若想放棄請輸入"取消"')
             RAND_FUNC_delete = True
         else:
-            curlist = ''
+            curlist = 'curlist\n'
             for idx,key in enumerate(db[uid]['RanDom']['setlist']):
                 curlist += '{}. {} : {}'.format(idx+1,key,db[uid]['RanDom']['setlist'][key])
             line_bot_api.reply_message(
