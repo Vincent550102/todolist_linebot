@@ -62,12 +62,11 @@ def start_random(uid,randrange,spacial):
         push_mess(uid,'{}加上{}減去{}是{}'.format(str(Y_M_D),str(Ts_minal_Y_M_D),str(Ts%Y_M_D),str(Y_M_D+Ts_minal_Y_M_D-Ts%Y_M_D)))
         final = Y_M_D+Ts_minal_Y_M_D-Ts%Y_M_D
         sleep(1)
-        if final <= num:
+        if final >= num:
             push_mess(uid,'最後{}減去{} 所以...'.format(str(final),str(final-num)))
         else:
             push_mess(uid,'最後{}加上{} 所以...'.format(str(final),str(num-final)))
-
-
+        sleep(1)
     push_mess(uid,'抽到的是 {} 號~'.format(str(num)))
 
 
