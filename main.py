@@ -85,8 +85,11 @@ def echo(event):
             if mess == "取消":
                 reply_mess(event, "已取消加入動作")
             else:
-                db[uid]['ToDoList']['todolist'].append(mess)
-                reply_mess(event, '已加入 : {} 在 {}'.format(mess,str(len(db[uid]['ToDoList']['todolist']))))
+                try:
+                    db[uid]['ToDoList']['todolist'].append(mess)
+                    reply_mess(event, '已加入 : {} 在 {}'.format(mess,str(len(db[uid]['ToDoList']['todolist']))))
+                except:
+                    reply_mess(event, '沒有此待辦事項')
             TODO_FUNC_push = False
         else:
             reply_mess(event, '請輸入您要加入的事項~ 若想放棄請輸入"取消"')
@@ -103,8 +106,11 @@ def echo(event):
             if mess == "取消":
                 reply_mess(event, "已取消刪除動作")
             else:
-                del db[uid]['ToDoList']['todolist'][int(mess)-1]
-                reply_mess(event, '已刪除 {}'.format(str(mess)))
+                try:
+                    del db[uid]['ToDoList']['todolist'][int(mess)-1]
+                    reply_mess(event, '已刪除 {}'.format(str(mess)))
+                except:
+                    reply_mess(event, '沒有此待辦事項')
             TODO_FUNC_delete = False
         else:
             reply_mess(event, '請輸入您要刪除的待辦事項~ 若想放棄請輸入"取消"')
@@ -117,20 +123,27 @@ def echo(event):
             else:
                 key = mess.split(':')[0]
                 rang = mess.split(':')[1]
-                db[uid]['RanDom']['setlist'][key] = rang
-                reply_mess(event, '已新增 {} 在 {}'.format(key,rang))
+                try:
+                    db[uid]['RanDom']['setlist'][key] = rang
+                    reply_mess(event, '已新增 {} 在 {}'.format(key,rang))
+                except:
+                    reply_mess(event, '發生問題，有可能是你的設定名稱輸錯了')
             RAND_FUNC_push = False
+
         elif RAND_FUNC_delete:
             if mess == "取消":
                 reply_mess(event, "已取消刪除動作")
             else:
-                del db[uid]['RanDom']['setlist'][mess]
-                reply_mess(event, '已刪除 : {}'.format(mess))
-            RAND_FUNC_push = False
+                try:
+                    del db[uid]['RanDom']['setlist'][mess]
+                    reply_mess(event, '已刪除 : {}'.format(mess))
+                except:
+                    reply_mess(event, '發生問題，有可能是你的設定名稱輸錯了')
+            RAND_FUNC_delete = False
 
     elif mess == 'RAND_設定' or mess == 'RAND_新增' or mess == 'RAND_刪除':
         if mess == 'RAND_新增':
-            reply_mess(event, '請輸入您要新增的設定~ [設定檔名]:[numer]~[number] ex. 310:1~18 若想放棄請輸入"取消"')
+            reply_mess(event, '請輸入您要新增的設定~ \n[設定檔名]:[numer]~[number] \nex. 310:1~18 \n若想放棄請輸入"取消"')
             RAND_FUNC_push = True
         elif mess == 'RAND_刪除':
             reply_mess(event, '請輸入您要刪除的設定~ 若想放棄請輸入"取消"')
@@ -138,7 +151,7 @@ def echo(event):
         else:
             curlist = 'curlist\n'
             for idx,key in enumerate(db[uid]['RanDom']['setlist']):
-                curlist += '{}. {} : {}'.format(idx+1,key,db[uid]['RanDom']['setlist'][key])
+                curlist += '{} : {}\n'.format(key,db[uid]['RanDom']['setlist'][key])
             line_bot_api.reply_message(
                 event.reply_token,
                 TemplateSendMessage(
@@ -159,13 +172,25 @@ def echo(event):
                     )
                 )
             )
-            pass
 
     elif mess == 'RAND_選設定' or RAND_FUNC_chose:
         if RAND_FUNC_chose:
-            pass
+            if mess == "取消":
+                reply_mess(event, "已取消選擇動作")
+            else:
+                if mess in db[uid]['RanDom']['setlist']:
+                    db[uid]['RanDom']['now_set'] = mess
+                    reply_mess(event, '已選擇 {}'.format(mess))
+                else:
+                    reply_mess(event, '發生問題，沒有這個設定檔')
+            RAND_FUNC_chose = False
         else:
-            pass
+            curlist = '目前有的設定檔\n'
+            for idx,key in enumerate(db[uid]['RanDom']['setlist']):
+                curlist += '{} : {}\n'.format(key,db[uid]['RanDom']['setlist'][key])
+            curlist += '\n目前選擇的設定檔 : {}\n請輸入您要選擇的設定檔~ 若想放棄請輸入"取消"'.format(db[uid]['RanDom']['now_set'] if db[uid]['RanDom']['now_set'] != '-1' else "null")
+            reply_mess(event, curlist)
+            RAND_FUNC_chose = True
 
     elif mess == 'todolist_menu':
         line_bot_api.reply_message(  # 回復傳入的訊息文字

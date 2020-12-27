@@ -16,7 +16,8 @@ def create_DB_Template(uid):
                 'FUNC_push' : False,
                 'FUNC_delete' : False,
                 'FUNC_chose' : False
-            }
+            },
+            'now_set' : '-1'
         },
         'nickname' : 'nickname'
     }

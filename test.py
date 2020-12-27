@@ -1,6 +1,3 @@
-tt = {
-  '310':'1~18',
-  '309':'1~44'
-}
-del tt['310']
+k = 310
+tt = 'as {}'.format(k if k != -1 else "null")
 print(tt)
