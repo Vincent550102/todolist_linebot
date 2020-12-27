@@ -42,7 +42,7 @@ def push_mess(uid, mess):
     )
 
 def start_random(uid,randrange,spacial):
-    num = randint(randrange[0],randrange[1])
+    num = randint(int(randrange[0]),int(randrange[1]))
     if spacial:
         pass
     push_mess(uid,'恭喜抽到的是 {} 號~'.format(str(num)))
