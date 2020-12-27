@@ -8,9 +8,14 @@ def create_DB_Template(uid):
                 'FUNC_delete' : False
             }
         },
-        'random':{
+        'RanDom':{
             'setlist':{
-                
+                #'class' : 'a to b'
+            },
+            'user_status':{
+                'FUNC_push' : False,
+                'FUNC_delete' : False,
+                'FUNC_chose' : False
             }
         },
         'nickname' : 'nickname'

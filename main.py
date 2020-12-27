@@ -59,54 +59,113 @@ def echo(event):
     uid = event.source.user_id
     db = json.load(open('DataBase.json', encoding='utf-8'))
     try:
-        FUNC_push = db[uid]['ToDoList']['user_status']['FUNC_push']
-        FUNC_delete = db[uid]['ToDoList']['user_status']['FUNC_delete']
+        TODO_FUNC_push = db[uid]['ToDoList']['user_status']['FUNC_push']
+        TODO_FUNC_delete = db[uid]['ToDoList']['user_status']['FUNC_delete']
+        RAND_FUNC_push = db[uid]['RanDom']['user_status']['FUNC_push']
+        RAND_FUNC_delete = db[uid]['RanDom']['user_status']['FUNC_delete']
+        RAND_FUNC_chose = db[uid]['RanDom']['user_status']['FUNC_chose']
     except:
         db[uid] = create_DB_Template(uid)
-        FUNC_push = db[uid]['ToDoList']['user_status']['FUNC_push']
-        FUNC_delete = db[uid]['ToDoList']['user_status']['FUNC_delete']
+        TODO_FUNC_push = db[uid]['ToDoList']['user_status']['FUNC_push']
+        TODO_FUNC_delete = db[uid]['ToDoList']['user_status']['FUNC_delete']
+        RAND_FUNC_push = db[uid]['RanDom']['user_status']['FUNC_push']
+        RAND_FUNC_delete = db[uid]['RanDom']['user_status']['FUNC_delete']
+        RAND_FUNC_chose = db[uid]['RanDom']['user_status']['FUNC_chose']
 
     if mess == 'debug':
         reply_mess(event, '''
     uid : {}
     FUNC_push : {}
     FUNC_delete : {}
-'''.format(uid,FUNC_push,FUNC_delete))
+'''.format(uid,TODO_FUNC_push,TODO_FUNC_delete))
         print(db)
 
-    elif mess == "加入" or FUNC_push:
-        if FUNC_push:
+    elif mess == "TODO_加入" or TODO_FUNC_push:
+        if TODO_FUNC_push:
             if mess == "取消":
                 reply_mess(event, "已取消加入動作")
             else:
                 db[uid]['ToDoList']['todolist'].append(mess)
-                
                 reply_mess(event, '已加入 : {} 在 {}'.format(mess,str(len(db[uid]['ToDoList']['todolist']))))
-            FUNC_push = False
+            TODO_FUNC_push = False
         else:
             reply_mess(event, '請輸入您要加入的事項~ 若想放棄請輸入"取消"')
-            FUNC_push = True
+            TODO_FUNC_push = True
 
-    elif mess == "檢視":
+    elif mess == "TODO_檢視":
         result = '_ToDoList_\n'
-        db = json.load(open('DataBase.json', encoding='utf-8'))
         for idx,item in enumerate(db[uid]['ToDoList']['todolist']):
             result += '{}. {}\n'.format(str(idx+1),item)
         reply_mess(event, result+'[uid : {}]'.format(uid))
 
-    elif mess == '刪除' or FUNC_delete:
-        if FUNC_delete:
+    elif mess == 'TODO_刪除' or TODO_FUNC_delete:
+        if TODO_FUNC_delete:
             if mess == "取消":
                 reply_mess(event, "已取消刪除動作")
             else:
-                db = json.load(open('DataBase.json', encoding='utf-8'))
                 del db[uid]['ToDoList']['todolist'][int(mess)-1]
-                print(db)
                 reply_mess(event, '已刪除 {}'.format(str(mess)))
-            FUNC_delete = False
+            TODO_FUNC_delete = False
         else:
             reply_mess(event, '請輸入您要刪除的待辦事項~ 若想放棄請輸入"取消"')
-            FUNC_delete = True
+            TODO_FUNC_delete = True
+
+    elif RAND_FUNC_push or RAND_FUNC_delete:
+        if RAND_FUNC_push:
+            if mess == "取消":
+                reply_mess(event, "已取消新增動作")
+            else:
+                key = mess.split(':')[0]
+                rang = mess.split(':')[1]
+                db[uid]['RanDom']['setlist'][key] = rang
+                reply_mess(event, '已新增 {} 在 {}'.format(key,rang))
+            RAND_FUNC_push = False
+        elif RAND_FUNC_delete:
+            if mess == "取消":
+                reply_mess(event, "已取消刪除動作")
+            else:
+                del db[uid]['RanDom']['setlist'][mess]
+                reply_mess(event, '已刪除 : {}'.format(mess))
+            RAND_FUNC_push = False
+
+    elif mess == 'RAND_設定' or mess == 'RAND_新增' or mess == 'RAND_刪除':
+        if mess == 'RAND_新增':
+            reply_mess(event, '請輸入您要新增的設定~ [設定檔名]:[numer]~[number] ex. 310:1~18 若想放棄請輸入"取消"')
+            RAND_FUNC_push = True
+        elif mess == 'RAND_刪除':
+            reply_mess(event, '請輸入您要刪除的設定~ 若想放棄請輸入"取消"')
+            RAND_FUNC_delete = True
+        else:
+            curlist = ''
+            for idx,key in enumerate(db[uid]['RanDom']['setlist']):
+                curlist += '{}. {} : {}'.format(idx+1,key,db[uid]['RanDom']['setlist'][key])
+            line_bot_api.reply_message(
+                event.reply_token,
+                TemplateSendMessage(
+                    alt_text='Buttons template',
+                    template=ButtonsTemplate(
+                        title='目前已有設定檔',
+                        text=curlist,
+                        actions=[
+                            MessageTemplateAction(
+                                label='新增(push)',
+                                text='RAND_新增'
+                            ),
+                            MessageTemplateAction(
+                                label='刪除(delete)',
+                                text='RAND_刪除'
+                            )
+                        ]
+                    )
+                )
+            )
+            pass
+
+    elif mess == 'RAND_選設定' or RAND_FUNC_chose:
+        if RAND_FUNC_chose:
+            pass
+        else:
+            pass
 
     elif mess == 'todolist_menu':
         line_bot_api.reply_message(  # 回復傳入的訊息文字
@@ -119,15 +178,15 @@ def echo(event):
                     actions=[
                         MessageTemplateAction(
                             label='檢視(check)',
-                            text='檢視'
+                            text='TODO_檢視'
                         ),
                         MessageTemplateAction(
                             label='加入(push)',
-                            text='加入'
+                            text='TODO_加入'
                         ),
                         MessageTemplateAction(
                             label='刪除(delete)',
-                            text='刪除'
+                            text='TODO_刪除'
                         )
                     ]
                 )
@@ -144,16 +203,16 @@ def echo(event):
                     text='請選擇動作',
                     actions=[
                         MessageTemplateAction(
-                            label='新增設定(new set)',
-                            text='新設定'
+                            label='設定(set)',
+                            text='RAND_設定'
                         ),
                         MessageTemplateAction(
                             label='選擇設定(chose set)',
-                            text='選設定'
+                            text='RAND_選設定'
                         ),
                         MessageTemplateAction(
                             label='開始抽號(random)',
-                            text='開始抽'
+                            text='RAND_開始抽'
                         )
                     ]
                 )
@@ -175,8 +234,11 @@ def echo(event):
             event.reply_token,
             TextMessage(text='我不知道你在說甚麼@@ : "'+event.message.text+'"')
         )
-    db[uid]['ToDoList']['user_status']['FUNC_push'] = FUNC_push
-    db[uid]['ToDoList']['user_status']['FUNC_delete'] = FUNC_delete
+    db[uid]['ToDoList']['user_status']['FUNC_push'] = TODO_FUNC_push
+    db[uid]['ToDoList']['user_status']['FUNC_delete'] = TODO_FUNC_delete
+    db[uid]['RanDom']['user_status']['FUNC_push'] = RAND_FUNC_push
+    db[uid]['RanDom']['user_status']['FUNC_delete'] = RAND_FUNC_delete
+    db[uid]['RanDom']['user_status']['FUNC_chose'] = RAND_FUNC_chose
 
     with open('DataBase.json','w',encoding='utf-8') as f:
         json.dump(db,f,indent=2,sort_keys=True,ensure_ascii=False)
