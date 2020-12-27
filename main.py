@@ -74,7 +74,7 @@ def echo(event):
             else:
                 db[uid]['todolist'].append(mess)
                 print(db[uid]['todolist'])
-                line_bot_api.push_message(to=uid,TextMessage(text='test'))
+                line_bot_api.push_message(uid,TextMessage(text='test'))
                 reply_mess(event, '已加入 : {} 在 {}'.format(mess,str(len(db[uid]['todolist']))))
             FUNC_push = False
         else:
