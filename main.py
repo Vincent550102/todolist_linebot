@@ -45,7 +45,7 @@ def start_random(uid,randrange,spacial):
     num = randint(randrange[0],randrange[1])
     if spacial:
         pass
-    push_mess(uid,'恭喜抽到的是 {} 號~'.format(num))
+    push_mess(uid,'恭喜抽到的是 {} 號~'.format(str(num)))
 
 
 # 接收 LINE 的資訊
